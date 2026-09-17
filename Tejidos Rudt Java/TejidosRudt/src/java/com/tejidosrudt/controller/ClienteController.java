@@ -73,7 +73,7 @@ public class ClienteController extends HttpServlet {
                 case "crear":
                     crearCliente(request, response);
                     break;
-                case "actualizar":
+                case "actualizarPerfil":
                     actualizarPerfil(request, response);
                     break;
                 default:
@@ -103,6 +103,7 @@ public class ClienteController extends HttpServlet {
 
     private void actualizarPerfil(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
+  
         int idCliente = SessionUtils.obtenerIdCliente(request); // seguridad: usa sesión
         Cliente c = new Cliente();
         c.setIdCliente(idCliente);
@@ -111,10 +112,19 @@ public class ClienteController extends HttpServlet {
         c.setTelefono(request.getParameter("telefono"));
         c.setEdad(Integer.parseInt(request.getParameter("edad")));
         c.setContraseña(request.getParameter("contraseña"));
-        c.setSexo(Cliente.Sexo.valueOf(request.getParameter("sexo").toUpperCase()));
 
-        clienteServicio.actualizarCliente(c);
-        response.sendRedirect("/cliente/perfil.jsp");
+        try {
+            boolean actualizado = clienteServicio.actualizarCliente(c);
+
+            if (actualizado) {
+                request.getSession().setAttribute("mensaje", "perfilActualizado");
+            }
+
+        } catch (IllegalArgumentException e) {
+            request.getSession().setAttribute("mensaje", e.getMessage());
+        }
+
+        response.sendRedirect(request.getContextPath() + "/cliente/perfil.jsp");
     }
 
     private void listarCarrito(HttpServletRequest request, HttpServletResponse response)
