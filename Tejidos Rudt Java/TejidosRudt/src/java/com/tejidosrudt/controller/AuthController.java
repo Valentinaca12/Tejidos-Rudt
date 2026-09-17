@@ -77,18 +77,22 @@ public class AuthController extends HttpServlet {
     private void login(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
 
+        //Captura de credenciales enviadas desde el formulario login.jsp
         String correo = request.getParameter("correo");
         String contrasena = request.getParameter("contrasena");
 
+        //Consulta en la base de datos a traves del servicio de autenticación de clientes
         Cliente cliente = clienteServicio.login(correo, contrasena);
 
         if (cliente != null) {
+            //Credenciale válidas: Se crea la sesión HTTP y se almacena el objeto clienteLogueado
             HttpSession session = request.getSession();
             session.setAttribute("clienteLogueado", cliente);
 
             // Redirigir al dashboard del cliente
             response.sendRedirect(request.getContextPath() + "/cliente/dashboard.jsp");
         } else {
+            //Credenciales invalidas: mensaje de error
             request.setAttribute("error", "Correo o contraseña incorrectos");
             request.getRequestDispatcher("/auth/login.jsp").forward(request, response);
         }
@@ -98,29 +102,43 @@ public class AuthController extends HttpServlet {
     private void registrar(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException, SQLException {
 
-    String nombre = request.getParameter("nombre");
-    String correo = request.getParameter("correo");
-    String contraseña = request.getParameter("contrasena");
-    String telefono = request.getParameter("telefono");
-    int edad = Integer.parseInt(request.getParameter("edad")); 
-    String sexo = request.getParameter("sexo"); 
+        // Captura de datos 
+        String nombre = request.getParameter("nombre");
+        String correo = request.getParameter("correo");
+        String contraseña = request.getParameter("contrasena");
+        String telefono = request.getParameter("telefono");
+        int edad = Integer.parseInt(request.getParameter("edad")); 
+        String sexo = request.getParameter("sexo"); 
 
-    Cliente nuevoCliente = new Cliente();
-    nuevoCliente.setNombre(nombre);
-    nuevoCliente.setCorreo(correo);
-    nuevoCliente.setContraseña(contraseña);
-    nuevoCliente.setTelefono(telefono);
-    nuevoCliente.setEdad(edad);
-    nuevoCliente.setSexo(Cliente.Sexo.valueOf(sexo.toUpperCase()));
-
+        // Creación e inicialización del objeto Cliente con los datos capturados
+        Cliente nuevoCliente = new Cliente();
+        nuevoCliente.setNombre(nombre);
+        nuevoCliente.setCorreo(correo);
+        nuevoCliente.setContraseña(contraseña);
+        nuevoCliente.setTelefono(telefono);
+        nuevoCliente.setEdad(edad);
+        nuevoCliente.setSexo(Cliente.Sexo.valueOf(sexo.toUpperCase()));
    
-    boolean registrado = clienteServicio.registrar(nuevoCliente);
+   try {
+       //Envío del objeto al servicio para su validación e inserción en la BD
+    boolean registrado =
+            clienteServicio.registrar(nuevoCliente);
 
     if (registrado) {
-        response.sendRedirect(request.getContextPath() + "/auth/login.jsp");
-    } else {
-        request.setAttribute("error", "No se pudo registrar el cliente");
-        request.getRequestDispatcher("/auth/registro.jsp").forward(request, response);
+        // Si el registro es exitoso, se guarda un mensaje en sesión y se redirecciona al login
+        request.getSession().setAttribute( "mensaje", "clienteRegistrado");
+
+        response.sendRedirect(
+                request.getContextPath() + "/auth/login.jsp");
+    }
+
+    } catch (IllegalArgumentException e) {
+        //Captura de errores y redirecciójn con mensaje de error
+        request.getSession().setAttribute( "mensaje",e.getMessage());
+
+        response.sendRedirect(request.getContextPath()+ "/auth/registro.jsp"
+        );
+
     }
   
 
@@ -149,5 +167,4 @@ public class AuthController extends HttpServlet {
     public String getServletInfo() {
         return "Controlador de autenticación de Tejidos Rudt";
     }
-} 
-
+}
