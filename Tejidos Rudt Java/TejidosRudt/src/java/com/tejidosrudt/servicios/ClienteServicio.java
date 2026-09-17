@@ -56,7 +56,13 @@ public class ClienteServicio {
         if (existente != null) {
             throw new IllegalArgumentException("El correo ya está registrado");
         }
-
+        
+        //Verifica su el telefono ya existe
+        Cliente existenteTelefono = clienteDAO.buscarXTelefono(cliente.getTelefono());
+        if (existenteTelefono != null) {
+            throw new IllegalArgumentException("El teléfono ya está registrado");
+        }
+        
         clienteDAO.crearCliente(cliente);
         return true;
     }
@@ -76,14 +82,26 @@ public class ClienteServicio {
             if (cliente.getIdCliente() <= 0) {
                 throw new IllegalArgumentException("El ID de cliente no es válido");
             }
+            
+            Cliente clienteCorreo = clienteDAO.buscarXCorreoCliente(cliente.getCorreo());
+
+            if (clienteCorreo != null && clienteCorreo.getIdCliente()
+                    != cliente.getIdCliente()) {            
+                throw new IllegalArgumentException("El correo ya está registrado");
+            }
+            
+            Cliente clienteTelefono = clienteDAO.buscarXTelefono(cliente.getTelefono());
+
+            if (clienteTelefono != null && clienteTelefono.getIdCliente()
+                    != cliente.getIdCliente()) {
+                throw new IllegalArgumentException("El teléfono ya está registrado");
+            }
+            
             clienteDAO.actualizarCliente(cliente);
             return true;
         } catch (SQLException e) {
-            System.err.println("Error SQL al actualizar cliente: " + e.getMessage());
-            return false;
-        } catch (IllegalArgumentException e) {
-            System.err.println("Validación fallida: " + e.getMessage());
-            return false;
+            throw new IllegalArgumentException(
+            "No fue posible actualizar el perfil");
         }
     }
 
@@ -160,6 +178,16 @@ public class ClienteServicio {
             return clienteDAO.buscarXCorreoCliente(correo);
         } catch (SQLException e) {
             System.err.println("Error SQL al buscar cliente por correo: " + e.getMessage());
+            return null;
+        }
+    }
+    
+    //Buscar por Telefono
+     public Cliente buscarClientePorTelefono(String telefono) {
+        try {
+            return clienteDAO.buscarXTelefono(telefono);
+        } catch (SQLException e) {
+            System.err.println("Error SQL al buscar cliente por teléfono: " + e.getMessage());
             return null;
         }
     }
