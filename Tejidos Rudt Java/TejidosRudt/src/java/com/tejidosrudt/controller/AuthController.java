@@ -37,7 +37,9 @@ public class AuthController extends HttpServlet {
 
         if ("logout".equalsIgnoreCase(accion)) {
             HttpSession session = request.getSession(false);
-            if (session != null) session.invalidate();
+            if (session != null){ session.invalidate();
+            }
+            request.getSession(true).setAttribute("mensaje", "logoutExitoso");
             response.sendRedirect(request.getContextPath() + "/index.jsp");
         }else{
             SessionUtils.redirigirSegunSesion(request, response);
