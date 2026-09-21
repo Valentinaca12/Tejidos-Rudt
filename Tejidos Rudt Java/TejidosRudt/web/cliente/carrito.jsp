@@ -23,11 +23,20 @@
     List<CarritoDetalle> productosCarrito = clienteServicio.listarCarrito(cliente.getIdCliente());
 %>
 
+<%
+String mensaje = (String) session.getAttribute("mensaje");
+session.removeAttribute("mensaje");
+%>
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Mi Carrito - Tejidos Rudt</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/ui/1.14.2/jquery-ui.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -157,6 +166,41 @@
     <%
         }
     %>
+    
+    <div id="dialog-mensaje" title="Comunicado" style="display:none;">
+        <p id="textoMensaje"></p>
+    </div>
+    
+    <script>
+
+    $(document).ready(function () {
+        let mensaje = "<%= mensaje %>";
+        if (mensaje === "productoAgregado") {
+
+            $("#textoMensaje").html("✅ Producto agregado al carrito correctamente");
+
+            $("#dialog-mensaje").dialog({ modal: true, width: 450});
+        }
+        if (mensaje === "El producto ya está en el carrito") {
+
+            $("#textoMensaje").html("⚠️ El producto ya está en el carrito");
+
+            $("#dialog-mensaje").dialog({modal: true, width: 450});
+        }
+        if (mensaje === "cantidadActualizada") {
+
+            $("#textoMensaje").html("✅ Cantidad actualizada correctamente");
+
+            $("#dialog-mensaje").dialog({modal: true, width: 450});
+        }
+        if (mensaje === "productoEliminado") {
+
+            $("#textoMensaje").html("✅ Producto eliminado del carrito");
+
+            $("#dialog-mensaje").dialog({modal: true, width: 450});
+        }
+     });
+    </script>
 
 </body>
 </html>
