@@ -140,6 +140,24 @@ public class CarritoDAO {
             ps.executeUpdate();
         }
     }
+    
+    //Verifica que un producto ya existe en el carrio
+    public boolean productoExisteEnCarrito(int idCliente, int idProducto) throws SQLException {
+    int idCarrito = obtenerCarritoPorCliente(idCliente);
+    String SQL = "SELECT COUNT(*) " + "FROM carritodetalle " + "WHERE idCarrito=? " + "AND idProducto=?";
+
+    try (PreparedStatement ps = con.prepareStatement(SQL)) {
+        ps.setInt(1, idCarrito);
+        ps.setInt(2, idProducto);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) { 
+            return rs.getInt(1) > 0;
+        }
+    }
+
+    return false;
+}
+
 
     //Actualiza la cantidad de un producto dentro del carrito
     public void actualizarCantidad(int idCliente, int idProducto, int cantidad) throws SQLException {
