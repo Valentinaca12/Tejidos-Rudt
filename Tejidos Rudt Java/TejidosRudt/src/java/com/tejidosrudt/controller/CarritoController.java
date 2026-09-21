@@ -74,6 +74,9 @@ public class CarritoController extends HttpServlet {
 
             }
             response.sendRedirect("carrito");
+         }catch (IllegalArgumentException e){
+                    request.getSession().setAttribute("mensaje", e.getMessage());
+                    response.sendRedirect("carrito");
         } catch (SQLException e) {
             throw new ServletException("Error al procesar carrito", e);
         }
@@ -84,6 +87,7 @@ public class CarritoController extends HttpServlet {
         int idProducto = Integer.parseInt(request.getParameter("idProducto"));
         int cantidad = Integer.parseInt(request.getParameter("cantidad"));
         carritoServicio.agregarProductoAlCarrito(idCliente, idProducto, cantidad);
+        request.getSession().setAttribute("mensaje", "productoAgregado");
     }
 
     //Modifica la cantidad de un producto especifico en el carrito
@@ -91,12 +95,14 @@ public class CarritoController extends HttpServlet {
         int idProducto = Integer.parseInt(request.getParameter("idProducto"));
         int cantidad = Integer.parseInt(request.getParameter("cantidad"));
         carritoServicio.actualizarCantidadProducto(idCliente, idProducto, cantidad);
+        request.getSession().setAttribute("mensaje", "cantidadActualizada");
     }
 
     //Elimina un producto del carrito del cliente
     private void eliminarProducto(HttpServletRequest request, int idCliente) throws SQLException {
         int idProducto = Integer.parseInt(request.getParameter("idProducto"));
         carritoServicio.eliminarProductoDelCarrito(idCliente, idProducto);
+        request.getSession().setAttribute("mensaje", "productoEliminado");
     }
 
     //Procesa la orden de compra y confirma el pedido del cliente
@@ -106,6 +112,7 @@ public class CarritoController extends HttpServlet {
         int idCliente = cliente.getIdCliente();
  
         carritoServicio.confirmarPedido(idCliente);
+        request.getSession().setAttribute("mensaje", "pedidoConfirmado");
         response.sendRedirect(request.getContextPath()  + "/pedidoencargo?accion=listarCliente&idCliente=" + idCliente);
 }
 
