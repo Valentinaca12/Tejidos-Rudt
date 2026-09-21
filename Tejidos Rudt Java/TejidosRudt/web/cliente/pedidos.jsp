@@ -1,4 +1,3 @@
-
 <%@page import="com.tejidosrudt.modelo.PedidoEncargo"%>
 <%-- 
     Document   : pedidos.jsp
@@ -8,12 +7,20 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.List"%>
+<%
+String mensaje = (String) session.getAttribute("mensaje");
+session.removeAttribute("mensaje");
+%>
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Mis Pedidos</title>
     <link rel="stylesheet" href="../css/estilos.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/ui/1.14.2/jquery-ui.js"></script>
     <style>
         body{
             background-color: #f4b6c2;
@@ -127,6 +134,32 @@
     <%
         }
     %>
+    <div id="dialog-mensaje" title="Comunicado" style="display:none;">
+            <p id="textoMensaje"></p>
+    </div>
+    
+    <script>
+
+    $(document).ready(function () {
+
+        let mensaje = "<%= mensaje %>";
+
+        if (mensaje === "pedidoConfirmado") {
+
+            $("#textoMensaje").html(
+                "✅ Pedido confirmado correctamente"
+            );
+
+            $("#dialog-mensaje").dialog({
+                modal: true,
+                width: 450
+            });
+
+        }
+
+    });
+
+    </script>
 </body>
 </html>
 
