@@ -40,7 +40,13 @@ public class CarritoServicio {
     if (idCliente <= 0 || idProducto <= 0 || cantidad <= 0) {
         throw new IllegalArgumentException("Datos inválidos para agregar producto al carrito");
     }
-    
+    if (carritoDAO.productoExisteEnCarrito(
+        idCliente,
+        idProducto)) {
+
+    throw new IllegalArgumentException(
+        "El producto ya está en el carrito");
+    }
     carritoDAO.agregarProducto(idCliente, idProducto, cantidad);
     recalcularValorTotal(idCliente);
 }
