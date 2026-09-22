@@ -61,7 +61,7 @@ session.removeAttribute("mensaje");
             </div>
 
             <div style="margin:15px;">
-                <input type="password" name="contrasena" placeholder="Contraseña"
+                <input type="password" name="contraseña" placeholder="Contraseña"
                        style="padding:10px; width:250px; border-radius:8px; border:1px solid #ccc;" required>
             </div>
 
