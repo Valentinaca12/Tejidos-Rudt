@@ -58,8 +58,13 @@ public class DetallePedidoDAO {
      //Lista los detalles un pedido por el IdPedido
      public List<DetallePedido> listarPorPedido(int idPedido) throws SQLException {
         List<DetallePedido> lista = new ArrayList<>();
-        String sql = "SELECT * FROM detallepedido WHERE idPedido = ?";
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
+        String SQL =
+            "SELECT dp.*, p.nombreProducto " +
+            "FROM detallepedido dp " +
+            "INNER JOIN producto p " +
+            "ON dp.idProducto = p.idProducto " +
+            "WHERE dp.idPedido = ?";
+        try (PreparedStatement ps = con.prepareStatement(SQL)) {
             ps.setInt(1, idPedido);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -69,6 +74,7 @@ public class DetallePedidoDAO {
                 detalle.setIdProducto(rs.getInt("idProducto"));
                 detalle.setCantidad(rs.getInt("cantidad"));
                 detalle.setSubtotal(rs.getInt("subtotal"));
+                detalle.setNombreProducto(rs.getString("nombreProducto"));
                 lista.add(detalle);
             }
         }
