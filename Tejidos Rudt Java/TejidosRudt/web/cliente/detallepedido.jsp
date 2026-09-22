@@ -27,7 +27,7 @@
     <table>
         <tr>
             <th>ID Pedido</th>
-            <th>ID Producto</th>
+            <th>Nombre Producto</th>
             <th>Cantidad</th>
             <th>Subtotal</th>
         </tr>
@@ -39,7 +39,7 @@
         %>
         <tr>
             <td><%= d.getIdPedido() %></td>
-            <td><%= d.getIdProducto() %></td>
+            <td><%= d.getNombreProducto()%></td>
             <td><%= d.getCantidad() %></td>
             <td>$<%= d.getSubtotal() %></td>
         </tr>
