@@ -14,6 +14,8 @@ public class DetallePedido {
     private int idProducto;
     private int cantidad;
     private int subtotal;
+    private String nombreProducto;
+
 
     public int getIdDetalle() {
         return idDetalle;
@@ -53,6 +55,14 @@ public class DetallePedido {
 
     public void setSubtotal(int subtotal) {
         this.subtotal = subtotal;
+    }
+    
+    public String getNombreProducto() {
+        return nombreProducto;
+    }
+
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
     }
 
     public DetallePedido(int idDetalle, int idPedido, int idProducto, int cantidad, int subtotal) {
